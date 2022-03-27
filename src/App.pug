@@ -1,0 +1,47 @@
+script.
+    // App.pug
+
+main
+    nav.navbar.navbar-inverse.navbar-fixed-top
+        .container
+            .navbar-header
+                button(
+                    type="button"
+                    class="navbar-toggle collapsed"
+                    data-toggle="collapse"
+                    data-target="#navbar"
+                    aria-expanded="false"
+                    aria-controls="navbar"
+                )
+                    span.sr-only Toggle Navigation
+                    span.icon-bar
+                    span.icon-bar
+                    span.icon-bar
+                a(
+                    class="navbar-brand"
+                ) Write Aid
+                    small v0.5
+
+            #navbar.collapse.navbar-collapse
+                ul.nav.navbar-nav
+                    li.active
+                        a(href="#") Word Search
+                    li
+                        a(href="#") Mindmap
+                    li
+                        a(href="#") Free Text
+                    li
+                        a(href="#") Venn Diagram
+                    li
+                        a(href="#") Others
+
+    .container
+        .starter-template
+            h1 Write Aid Svelte
+
+style.
+    .navbar-brand small {
+        font-size: 0.5em;
+        margin-left: 5px;
+    }
+

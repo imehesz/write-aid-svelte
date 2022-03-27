@@ -1,0 +1,68 @@
+script.
+    import { createEventDispatcher } from "svelte"
+
+    export let selectedLayer = {
+        imageUrl: "",
+        idx: -1,
+        weight: 0,
+        width: 100,
+        height: 100,
+        posX: 0,
+        posY: 0
+    }
+
+    const publish = createEventDispatcher()
+
+    const onUpdate = () => publish("updateLayer", selectedLayer)
+
+    const updateUrl = (el) => selectedLayer.imageUrl=el.target.value
+    const updateWeight = (el) => selectedLayer.weight=el.target.value
+    const updatePosX = (el) => selectedLayer.posX=el.target.value
+    const updatePosY = (el) => selectedLayer.posY=el.target.value
+    const updateWidth = (el) => selectedLayer.width=el.target.value
+    const updateHeight = (el) => selectedLayer.height=el.target.value
+
+div.settings-panel
+    h1 Settings for {selectedLayer.idx}
+
+    input(
+      type="text", 
+      placeholder="Image URL", 
+      value={selectedLayer.imageUrl}
+      "on:keyup"={updateUrl})
+
+    input(
+      type="number",
+      placeholder="posX",
+      value={selectedLayer.posX}
+      "on:keyup"={updatePosX}
+    )
+
+    input(
+      type="number",
+      placeholder="posY",
+      value={selectedLayer.posY}
+      "on:keyup"={updatePosY}
+    )
+
+    input(
+      type="number",
+      placeholder="width",
+      value={selectedLayer.width}
+      "on:keyup"={updateWidth}
+    )
+
+    input(
+      type="number",
+      placeholder="height",
+      value={selectedLayer.height}
+      "on:keyup"={updateHeight}
+    )
+
+    input(
+      type="number",
+      value={selectedLayer.weight},
+      placeholder="weight"
+      "on:keyup"={updateWeight})
+
+    button("on:click"={onUpdate}) Update

@@ -1,0 +1,47 @@
+script.
+    import { createEventDispatcher } from "svelte"
+
+    export let idx
+    export let imageUrl
+    export let isSelected
+    export let weight
+    export let width
+    export let height
+    export let posX
+    export let posY
+       
+    const publish = createEventDispatcher()
+
+    const onSelect = () => publish("setSelected", idx)
+
+    let blah = "BLAH"
+
+div(
+    "class"="image-layer {isSelected?'selected':''}"
+    "style"="width:{width}px;height:{height}px;left:{posX}px;top:{posY}px"
+    "on:click"={onSelect}
+    )
+    img(src={imageUrl})
+
+
+style.
+    .image-layer {
+        border: 1px solid rgba(0,0,0,0);
+        position: absolute;
+        min-width: 25px;
+        min-height: 25px;
+    }
+
+    .image-layer:hover {
+        border: 1px solid #333;
+    }
+
+
+    .image-layer.selected {
+        border: 1px solid #f00;
+    }
+
+    .image-layer img {
+        width: 100%;
+        height: 100%;
+    }
