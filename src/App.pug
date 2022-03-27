@@ -1,5 +1,9 @@
 script.
     // App.pug
+    let views = ["home", "mindmap", "freetext", "venn", "others"]
+    let currentView = "home"
+
+    const setView = (viewId) => currentView = viewId
 
 main
     nav.navbar.navbar-inverse.navbar-fixed-top
@@ -24,21 +28,33 @@ main
 
             #navbar.collapse.navbar-collapse
                 ul.nav.navbar-nav
-                    li.active
-                        a(href="#") Word Search
-                    li
-                        a(href="#") Mindmap
-                    li
-                        a(href="#") Free Text
-                    li
-                        a(href="#") Venn Diagram
-                    li
-                        a(href="#") Others
+                    li( class="{ currentView == 'home' ? 'active' : ''}")
+                        a(href="#" "on:click|preventDefault"="{ setView.bind(this,'home') }") Word Search
+                    li( class="{ currentView == 'mindmap' ? 'active' : ''}")
+                        a(href="#" "on:click|preventDefault"="{ setView.bind(this,'mindmap') }") Mindmap
+                    li( class="{ currentView == 'freetext' ? 'active' : ''}")
+                        a(href="#" "on:click|preventDefault"="{ setView.bind(this,'freetext') }") Free Text
+                    li( class="{ currentView == 'venn' ? 'active' : ''}")
+                        a(href="#" "on:click|preventDefault"="{ setView.bind(this,'venn') }") Venn Diagram
+                    li( class="{ currentView == 'others' ? 'active' : ''}")
+                        a(href="#" "on:click|preventDefault"="{ setView.bind(this, 'others') }") Others
 
     .container
         .starter-template
-            h1 Write Aid Svelte
+            {#if currentView == "home"}
+              h1 Home
 
+            {#if currentView == "mindmap"}
+              h1 Mindmap
+
+            {#if currentView == "freetext"}
+              h1 Free Text
+
+            {#if currentView == "venn"}
+              h1 Venn D
+
+            {#if currentView == "others"}
+              h1 Others
 style.
     .navbar-brand small {
         font-size: 0.5em;
