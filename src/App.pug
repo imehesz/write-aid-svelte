@@ -1,5 +1,7 @@
 script.
     // App.pug
+    import WordSearch from "./WordSearch.pug"
+
     let views = ["home", "mindmap", "freetext", "venn", "others"]
     let currentView = "home"
 
@@ -42,7 +44,7 @@ main
     .container
         .starter-template
             {#if currentView == "home"}
-              h1 Home
+              WordSearch
 
             {#if currentView == "mindmap"}
               h1 Mindmap
@@ -55,6 +57,9 @@ main
 
             {#if currentView == "others"}
               h1 Others
+
+    footer.footer Made with &#9829; by 
+        a(href="https://IMstandup.com") IMstandup.com
 style.
     .navbar-brand small {
         font-size: 0.5em;
