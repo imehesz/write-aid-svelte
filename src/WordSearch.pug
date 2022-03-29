@@ -1,32 +1,104 @@
 script.
     // WordSearch.pug
 
+    const QUID = {
+        "SYN": {
+            id: "synonym",
+            qParam: "rel_syn",
+            label: "Synonym"
+        },
+
+        "ANT": {
+            id: "anthonym",
+            qParam: "rel_ant",
+            label: "Anthonym" 
+        },
+
+        "KOF": {
+            id: "kind_of",
+            qParam: "rel_spc",
+            label: "Kind of ..."
+        },
+
+        "TRI": {
+            id: "trigger",
+            qParam: "rel_tri",
+            label: "Trigger"
+        }
+    }
+
+    const findObjectElById = (arr, id) => Object.entries(arr).filter((el) => {return el[1].id==id})[0][1]
+
+    const findSearchTypeById = (id) => findObjectElById(QUID, id)
+
+    let searchTypes = [ QUID.SYN.id, QUID.ANT.id, QUID.KOF.id, QUID.TRI.id ]
+    let wordsStr = "apple, dog"
+    let wordsArr = []
+    let phrasesObjs = {
+        "synonym": [],
+        "anthonym": [],
+        "kind_of": [],
+        "trigger": []
+    }
+
+    const getResults = (qParam, word) => {
+        return new Promise((resolve, reject) => {
+            window.$.ajax({
+                url: `https://api.datamuse.com/words?${qParam}=${word}`,
+                type: "GET",
+                success: (data) => resolve(data),
+                error: (data) => reject(data)
+            })
+        })
+    }
+
+    const search = () => {
+        wordsArr = wordsStr.split(",").slice(0,3).map(el => el.trim())
+
+        if( wordsArr.length ) {
+            searchTypes.map(el => { 
+                let typeObj = findSearchTypeById(el)
+
+                phrasesObjs[typeObj.id] = []
+
+                for(let i=0; i<wordsArr.length; i++) {
+                    let word = wordsArr[i].toLowerCase()
+
+                    getResults(typeObj.qParam, word).then((data) => {
+                        phrasesObjs[typeObj.id].push({
+                            word: word,
+                            results: data.map((resEl) => resEl["word"])
+                        })
+                        
+                        console.log(phrasesObjs)
+                        phrasesObjs = phrasesObjs
+                    })
+                }
+            })
+        }
+    }
+
 section
     form
         .row
             .col-lg-10.col-md-8
-                input(type="text" class="form-control input-lg" placeholder="Type up to 3 words separated by space to search for")
+                input(type="text" class="form-control input-lg" placeholder="Type up to 3 words separated by commas" value="{wordsStr}")
             .col-md-2
-                button(class="btn btn-primary btn-lg btn-block") Search
+                button(class="btn btn-primary btn-lg btn-block" "on:click|preventDefault"="{ search }") Search
     
     hr
 
-    fieldset 
-        label(for="synonymn") Synonyms
-        .jumbotron
-            table.table 
-                tr 
-                    td blah
-                    td asd asdjh ajsh asdjh jashd asd asdjh ajsh asdjh jashd asd asdjh ajsh asdjh jashd asd asdjh ajsh asdjh jashd   asd asdjh ajsh asdjh jashd   asd asdjh ajsh asdjh jashd   asd asdjh ajsh asdjh jashd   asd asdjh ajsh asdjh jashd   asd asdjh ajsh asdjh jashd                        
-    
-    fieldset
-        label(for="kindof") Kind of ...
-        .jumbotron bbbb
+    {#each searchTypes as searchType} 
+      fieldset 
+            label(for="{searchType}") {findSearchTypeById(searchType).label}
+            .jumbotron 
+                table.table 
+                    {#each phrasesObjs[searchType] as phrase}
+                      tr
+                            td {phrase.word} 
+                            td {phrase.results} 
 
-    fieldset
-        label(for="anthonym") Anthonyms
-        .jumbotron bbbb
-
-    fieldset
-        label(for="trigger") Related
-        .jumbotron bbbb
+style.
+    fieldset label {
+        text-transform: uppercase;
+    }
