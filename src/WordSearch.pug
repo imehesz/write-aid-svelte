@@ -32,13 +32,20 @@ script.
     const findSearchTypeById = (id) => findObjectElById(QUID, id)
 
     let searchTypes = [ QUID.SYN.id, QUID.ANT.id, QUID.KOF.id, QUID.TRI.id ]
-    let wordsStr = "apple, dog"
+    let wordsStr = "treat, dog"
     let wordsArr = []
     let phrasesObjs = {
         "synonym": [],
         "anthonym": [],
         "kind_of": [],
         "trigger": []
+    }
+
+    let toggles = {
+        "synonym": true,
+        "anthonym": true,
+        "kind_of": true,
+        "trigger": true
     }
 
     const getResults = (qParam, word) => {
@@ -78,6 +85,8 @@ script.
         }
     }
 
+    const toggleMe = (toggleId) => toggles[toggleId] = !toggles[toggleId]
+
 section
     form
         .row
@@ -90,15 +99,30 @@ section
 
     {#each searchTypes as searchType} 
       fieldset 
-            label(for="{searchType}") {findSearchTypeById(searchType).label}
-            .jumbotron 
+            label(for="{searchType}") {findSearchTypeById(searchType).label} 
+                span("on:click|preventDefault"="{function(){ toggleMe(searchType)}}") [{toggles[searchType]?"x":"+"}]
+            {#if toggles[searchType]}
+              .jumbotron 
                 table.table 
                     {#each phrasesObjs[searchType] as phrase}
+                      tr.hidden-md.hidden-lg
+                            td(colspan=2, align="center")
+                                strong {phrase.word}
                       tr
-                            td {phrase.word} 
-                            td {phrase.results} 
+                            td.hidden-sm.hidden-xs
+                                strong {phrase.word} 
+                            td
+                              {#each phrase.results as word}
+                                span {word} 
 
 style.
     fieldset label {
         text-transform: uppercase;
+    }
+
+    .table td span {
+        display: inline-block;
+        background-color: #fff;
+        margin: 5px 5px 0 0;
+        padding: 2px 5px;
     }
