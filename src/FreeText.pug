@@ -1,0 +1,34 @@
+script.
+    // FreeText.pug
+    let colors = ["fff3d4", "333", "eee", "6495ED"]
+    let fontColor = `#${colors[1]}`
+    let bgColor = `#${colors[0]}`
+
+section.free-text
+    span Font color: 
+    input(type="color", bind:value={fontColor}) 
+
+    span Backgournd Color: 
+    input(type="color", bind:value={bgColor})
+    
+    hr
+    
+    pre
+        .text-area(contenteditable=true, style="color:{fontColor};background-color:{bgColor}") TYPE YOUR FUNNY IDEAS HERE
+style.
+    .free-text {}
+
+    .free-text input {
+        height: 30px;
+        margin: 0 10px;
+    }
+
+    .free-text pre {
+        margin: 0;
+        padding: 0;
+    }
+
+    .free-text .text-area {
+        padding: 10px;
+        height: 75vh;
+    }
