@@ -32,7 +32,7 @@ script.
     const findSearchTypeById = (id) => findObjectElById(QUID, id)
 
     let searchTypes = [ QUID.SYN.id, QUID.ANT.id, QUID.KOF.id, QUID.TRI.id ]
-    let wordsStr = "treat, dog"
+    let wordsStr = ""
     let wordsArr = []
     let phrasesObjs = {
         "synonym": [],
@@ -60,64 +60,78 @@ script.
     }
 
     const search = () => {
-        wordsArr = wordsStr.split(",").slice(0,3).map(el => el.trim())
+        if(wordsStr) {
+            wordsArr = wordsStr.split(",").slice(0,3).map(el => el.trim())
+            
+            if( wordsArr.length ) {
+                searchTypes.map(el => { 
+                    let typeObj = findSearchTypeById(el)
 
-        if( wordsArr.length ) {
-            searchTypes.map(el => { 
-                let typeObj = findSearchTypeById(el)
+                    phrasesObjs[typeObj.id] = []
 
-                phrasesObjs[typeObj.id] = []
+                    for(let i=0; i<wordsArr.length; i++) {
+                        let word = wordsArr[i].toLowerCase()
 
-                for(let i=0; i<wordsArr.length; i++) {
-                    let word = wordsArr[i].toLowerCase()
-
-                    getResults(typeObj.qParam, word).then((data) => {
-                        phrasesObjs[typeObj.id].push({
-                            word: word,
-                            results: data.map((resEl) => resEl["word"])
+                        getResults(typeObj.qParam, word).then((data) => {
+                            phrasesObjs[typeObj.id].push({
+                                word: word,
+                                results: data.map((resEl) => resEl["word"])
+                            })
+                            
+                            phrasesObjs = phrasesObjs
                         })
-                        
-                        console.log(phrasesObjs)
-                        phrasesObjs = phrasesObjs
-                    })
-                }
-            })
+                    }
+                })
+            }
         }
     }
 
     const toggleMe = (toggleId) => toggles[toggleId] = !toggles[toggleId]
 
+    const updatePhrases = (e) => wordsStr = e.target.value
+
 section
     form
         .row
             .col-lg-10.col-md-8
-                input(type="text" class="form-control input-lg" placeholder="Type up to 3 words separated by commas" value="{wordsStr}")
+                input(type="text" 
+                  class="form-control input-lg" 
+                  placeholder="Type up to 3 words separated by commas"
+                  "on:keyup"="{updatePhrases}" 
+                  value="{wordsStr}")
             .col-md-2
                 button(class="btn btn-primary btn-lg btn-block" "on:click|preventDefault"="{ search }") Search
     
     hr
 
-    {#each searchTypes as searchType} 
-      fieldset 
-            label(for="{searchType}") {findSearchTypeById(searchType).label} 
-                span("on:click|preventDefault"="{function(){ toggleMe(searchType)}}") [{toggles[searchType]?"x":"+"}]
-            {#if toggles[searchType]}
-              .jumbotron 
-                table.table 
-                    {#each phrasesObjs[searchType] as phrase}
-                      tr.hidden-md.hidden-lg
-                            td(colspan=2, align="center")
-                                strong {phrase.word}
-                      tr
-                            td.hidden-sm.hidden-xs
-                                strong {phrase.word} 
-                            td
-                              {#each phrase.results as word}
-                                span {word} 
+    {#if wordsArr.length}
+      {#each searchTypes as searchType} 
+        fieldset 
+              label(for="{searchType}") {findSearchTypeById(searchType).label} 
+                  span("on:click|preventDefault"="{function(){ toggleMe(searchType)}}") [{toggles[searchType]?"x":"+"}]
+              {#if toggles[searchType]}
+                .jumbotron 
+                  table.table 
+                      {#each phrasesObjs[searchType] as phrase}
+                        {#if wordsArr.length>1}
+                          tr.hidden-md.hidden-lg
+                                td(colspan=2, align="center")
+                                    strong {phrase.word}
+                        tr
+                              {#if wordsArr.length>1}
+                                td.hidden-sm.hidden-xs
+                                    strong {phrase.word} 
+                              td
+                                {#each phrase.results as word}
+                                  span {word} 
 
 style.
     fieldset label {
         text-transform: uppercase;
+    }
+
+    fieldset label span {
+        cursor: pointer;
     }
 
     .table td span {
