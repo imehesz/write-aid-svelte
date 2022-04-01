@@ -49,19 +49,19 @@ main
 
     .container
         .starter-template
-            {#if currentView == "home"}
-              WordSearch
+            div(class="view-{currentView != 'home' ? 'hidden' : 'block'}")
+                WordSearch
 
-            {#if currentView == "mindmap"}
+            div(class="view-{currentView != 'mindmap' ? 'hidden' : 'block'}")
               h1 Mindmap
 
-            {#if currentView == "freetext"}
+            div(class="view-{currentView != 'freetext' ? 'hidden' : 'block'}")
               FreeText
 
-            {#if currentView == "venn"}
+            div(class="view-{currentView != 'venn' ? 'hidden' : 'block'}")
               h1 Venn D
 
-            {#if currentView == "others"}
+            div(class="view-{currentView != 'others' ? 'hidden' : 'block'}")
               h1 Others
 
     footer.footer Made with &#9829; by 
@@ -80,3 +80,6 @@ style.
         text-align: center;
     }
 
+    .view-hidden {
+        display: none;
+    }
