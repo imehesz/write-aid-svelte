@@ -3,6 +3,9 @@ script.
     let colors = ["fff3d4", "333", "eee", "6495ED"]
     let fontColor = `#${colors[1]}`
     let bgColor = `#${colors[0]}`
+    let fullscreen = false
+
+    const toggleFullscreen = () => fullscreen = !fullscreen
 
 section.free-text
     span Font color: 
@@ -13,10 +16,14 @@ section.free-text
     
     hr
     
-    pre
+    pre(class="{fullscreen ? 'fullscreen' : ''}")
         .text-area(contenteditable=true, style="color:{fontColor};background-color:{bgColor}") TYPE YOUR FUNNY IDEAS HERE
+        span(class="fullscreen-icon", "on:click"="{toggleFullscreen}") &#x26F6;
+
 style.
     .free-text {}
+
+ 
 
     .free-text input {
         height: 30px;
@@ -26,9 +33,42 @@ style.
     .free-text pre {
         margin: 0;
         padding: 0;
+        position: relative;
     }
 
     .free-text .text-area {
         padding: 10px;
         height: 75vh;
+        overflow: auto;
+    }
+
+    .free-text .fullscreen .text-area {
+        height: 100vh;
+        max-height: 100vh;
+    }
+
+    .free-text .fullscreen {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: 10000;
+        max-height: 100vh;
+    }
+
+    .free-text .fullscreen-icon {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        margin: 20px;
+        font-size: 2em;
+        color: lightgray;
+    }
+
+    .free-text .fullscreen-icon:hover {
+        position: absolute;
+        font-weight: bolder;
+        color: darkgray;
+        cursor: pointer;
     }
