@@ -3,90 +3,87 @@ script.
     import { mainWord } from './stores.js'
 
     let wordStr = ""
+    let showResults = false
 
-    const getWord = () => $mainWord
+    const getDefaultCategories = () => {
+        let _defaultCategories = [
+            {
+                id: "meaning_of",
+                label: "Meaning Of",
+                links: [
+                    {
+                        source: "Merriam-Webster",
+                        url: `https://www.merriam-webster.com/dictionary/__WORD__`
+                    },
 
-    const generateLinks = () => {
+                    {
+                        source: "Dictionary.com",
+                        url: `https://www.dictionary.com/browse/__WORD__`
+                    },
 
+                    {
+                        source: "Wikipedia",
+                        url: `https://en.wikipedia.org/wiki/__WORD__`
+                    }
+                ]
+            },
+
+            {
+                id: "phrases",
+                label: "Phrases",
+                links: [
+                    {
+                        source: "The FREE Dictionary",
+                        url: `https://idioms.thefreedictionary.com/__WORD__`
+                    },
+
+                    {
+                        source: "Phrases.org.uk",
+                        url: "https://www.phrases.org.uk/phrase-thesaurus/related/__WORD__.html"
+                    }
+                ]
+            },
+
+            {
+                id: "synonyms",
+                label: "Synonymns",
+                links: [
+                    {
+                        source: "Thesaurus.com",
+                        url: "https://www.thesaurus.com/browse/__WORD__"
+                    }
+                ]
+            },
+
+            {
+                id: "in_the_news",
+                label: "In the News",
+                links: [
+                    {
+                        source: "Google News",
+                        url: `https://news.google.com/search?q=__WORD__&hl=en-US&gl=US`
+                    },
+
+                    {
+                        source: "Bing News",
+                        url: `https://www.bing.com/news/search?q=__WORD__`
+                    },
+
+                    {
+                        source: "Yahoo! News",
+                        url: `https://news.search.yahoo.com/search?p=__WORD__`
+                    }
+                ]
+            }
+        ]
+
+        return _defaultCategories
     }
 
-    const updateWord = () => {
+    let otherCategories = getDefaultCategories()
 
-    }
-
-    let otherCategories = [
-        {
-            id: "meaning_of",
-            label: "Meaning Of",
-            links: [
-                {
-                    source: "Merriam-Webster",
-                    url: `https://www.merriam-webster.com/dictionary/__WORD__`
-                },
-
-                {
-                    source: "Dictionary.com",
-                    url: `https://www.dictionary.com/browse/__WORD__`
-                },
-
-                {
-                    source: "Wikipedia",
-                    url: `https://en.wikipedia.org/wiki/__WORD__`
-                }
-            ]
-        },
-
-        {
-            id: "phrases",
-            label: "Phrases",
-            links: [
-                {
-                    source: "The FREE Dictionary",
-                    url: `https://idioms.thefreedictionary.com/__WORD__`
-                },
-
-                {
-                    source: "Phrases.org.uk",
-                    url: "https://www.phrases.org.uk/phrase-thesaurus/related/__WORD__.html"
-                }
-            ]
-        },
-
-        {
-            id: "synonyms",
-            label: "Synonymns",
-            links: [
-                {
-                    source: "Thesaurus.com",
-                    url: "https://www.thesaurus.com/browse/__WORD__"
-                }
-            ]
-        },
-
-        {
-            id: "in_the_news",
-            label: "In the News",
-            links: [
-                {
-                    source: "Google News",
-                    url: `https://news.google.com/search?q=__WORD__&hl=en-US&gl=US`
-                },
-
-                {
-                    source: "Bing News",
-                    url: `https://www.bing.com/news/search?q=__WORD__`
-                },
-
-                {
-                    source: "Yahoo! News",
-                    url: `https://news.search.yahoo.com/search?p=__WORD__`
-                }
-            ]
-        }
-    ]
-
-    PubSub.subscribe("mainWordChange", (wordObj) => {
-        wordStr = wordObj.mainWord || ""
+    const genLinksForCategories = () => {
+        otherCategories = getDefaultCategories()
 
         for(let catCnt=0; catCnt<otherCategories.length; catCnt++) {
             let categ = otherCategories[catCnt]
@@ -98,6 +95,11 @@ script.
         }
 
         otherCategories = otherCategories
+    }
+
+    PubSub.subscribe("mainWordChange", (wordObj) => {
+        wordStr = wordObj.mainWord || ""
+        genLinksForCategories()
     })
 
 section.others-view
@@ -106,18 +108,52 @@ section.others-view
             .col-lg-10.col-md-8
                 input(type="text" 
                   class="form-control input-lg" 
-                  placeholder="Type up to 3 words separated by commas"
-                  "on:keyup"="{updateWord}" 
-                  value="{$mainWord}")
+                  placeholder="Add source word for the links"
+                  bind:value="{wordStr}")
             .col-md-2
-                button(class="btn btn-primary btn-lg btn-block" "on:click|preventDefault"="{ generateLinks }") Do it
+                button(class="btn btn-primary btn-lg btn-block" "on:click|preventDefault"="{ genLinksForCategories }") Update
     
     hr
 
-    {#each otherCategories as category}  
-      div {category.label}
-            ul 
-                {#each category.links as link}
-                  li
-                    span {link.source}: 
-                    a(href="{link.url}", target="_blank") {wordStr} 
+    .panel-wrapper
+        {#each otherCategories as category}  
+          .panel.panel-default
+            .panel-heading 
+                h3 {category.label}
+                ul
+                    {#each category.links as link}
+                      li
+                          a(href="{link.url}", target="_blank") {link.source}
+
+style.    
+    .others-view .panel-wrapper {
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: justify;
+        gap: 10%;
+    }
+
+    .others-view .panel-default>.panel-heading {
+        height: 100%;
+    }
+
+    .others-view .panel-wrapper ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .others-view li {
+        margin: 0;
+        padding: 5px 0;
+    }
+
+    .others-view h3 {
+        margin-top: 5px;
+    }
+
+    @media only screen and (max-width: 992px) {
+        .others-view .panel-wrapper {
+            flex-direction: column;
+        }
+    }
