@@ -2,9 +2,13 @@ script.
     // App.pug
     import WordSearch from "./WordSearch.pug"
     import FreeText from "./FreeText.pug"
+    import OthersView from "./OthersView.pug"
 
     let views = ["home", "mindmap", "freetext", "venn", "others"]
-    let currentView = "home"
+    var currentView = "home"
+
+    // used to drive different writing flows throughout the app
+    let mainWord;
 
     const setView = (viewId) => currentView = viewId
 
@@ -41,8 +45,8 @@ main
                     //-
                         li( class="{ currentView == 'venn' ? 'active' : ''}")
                         a(href="#" "on:click|preventDefault"="{ setView.bind(this,'venn') }") Venn Diagram
-                    //-
-                        li( class="{ currentView == 'others' ? 'active' : ''}")
+                    
+                    li( class="{ currentView == 'others' ? 'active' : ''}")
                         a(href="#" "on:click|preventDefault"="{ setView.bind(this, 'others') }") Others
                     li 
                         a(href="https://imstandup.com/writeaid/", target="_blank") Legacy Write Aid
@@ -62,7 +66,7 @@ main
               h1 Venn D
 
             div(class="view-{currentView != 'others' ? 'hidden' : 'block'}")
-              h1 Others
+              OthersView
 
     footer.footer Made with &#9829; by 
         a(href="https://IMstandup.com") IMstandup.com

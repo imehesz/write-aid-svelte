@@ -1,5 +1,7 @@
 script.
     // WordSearch.pug
+    import { mainWord } from "./stores.js"
+    import { Util } from "./Util.js"
 
     const QUID = {
         "SYN": {
@@ -64,6 +66,10 @@ script.
             wordsArr = wordsStr.split(",").slice(0,3).map(el => el.trim())
             
             if( wordsArr.length ) {
+                // setting the first word to be the mainWord
+                $mainWord = wordsArr[0]
+                PubSub.publish("mainWordChange", {mainWord: wordsArr[0]})
+
                 searchTypes.map(el => { 
                     let typeObj = findSearchTypeById(el)
 

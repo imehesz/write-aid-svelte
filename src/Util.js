@@ -1,7 +1,9 @@
 /**
  * Util.js
  */
-const Util = {
+import { mainWord } from './stores.js'
+
+export const Util = {
     ArrayUtil: {
         shuffle: (arr) => {
             var currentIndex = arr.length,  randomIndex;
@@ -35,7 +37,9 @@ const Util = {
                 console.error(err) // TypeError: failed to fetch
             }
         }
+    },
+
+    StoreUtil: {
+        setMainWord: word => $mainWord = word
     }
 }
-
-module.exports = Util
