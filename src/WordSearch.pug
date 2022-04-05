@@ -24,7 +24,7 @@ script.
 
         "TRI": {
             id: "trigger",
-            qParam: "rel_tri",
+            qParam: "rel_trg",
             label: "Trigger"
         }
     }
@@ -83,18 +83,44 @@ script.
                                 word: word,
                                 results: data.map((resEl) => resEl["word"])
                             })
-                            
+
                             phrasesObjs = phrasesObjs
                         })
                     }
                 })
             }
         }
+
     }
 
     const toggleMe = (toggleId) => toggles[toggleId] = !toggles[toggleId]
 
     const updatePhrases = (e) => wordsStr = e.target.value
+
+    const getWordScore = (word) => {
+        let score = 0
+        
+        searchTypes.map(type => {
+            phrasesObjs[type].map(el => {
+                if(el.results.indexOf(word) > -1) score++
+            })
+        })
+        
+        return score
+    }
+
+    const getWordScoreLabel = (word) => {
+        switch(getWordScore(word)) {
+            case 0:
+            case 1:
+                return "low"
+            case 2:
+                return "medium"
+            case 3:
+            default:
+                return "high"
+        }
+    }
 
 section.word-search
     form
@@ -129,7 +155,8 @@ section.word-search
                                     strong {phrase.word} 
                               td
                                 {#each phrase.results as word}
-                                  span {word} 
+                                  span(class="score_{getWordScoreLabel(word)}") {word}
+                                        //- sup(class="{getWordScore(word)}") {getWordScore(word)} 
 
 style.
     fieldset label {
@@ -146,3 +173,14 @@ style.
         margin: 5px 5px 0 0;
         padding: 2px 5px;
     }
+
+    .table td span.score_medium {
+        background-color: #fff9c4;
+    }
+
+    .table td span.score_high {
+        background-color: #b4ffb3;
+    }
+    
+
+    
