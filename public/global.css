@@ -93,6 +93,25 @@ body {
 	padding: 10px;
 }
 
+.btn-primary {
+    color: #fff;
+    background-color: #222;
+    border-color: #222;
+}
+
+.btn-primary:hover {
+	background-color: #000;
+	border-color: #222;
+}
+
+.btn-group-lg>.btn, .btn-lg {
+	border-radius: 0;
+}
+
+.input-lg {
+	border-radius: 0;
+}
+
 @media screen and (min-width: 768px) {
 	.jumbotron {
     	padding-top: 30px;
