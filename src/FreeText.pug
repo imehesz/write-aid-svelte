@@ -1,31 +1,87 @@
 script.
     // FreeText.pug
+    import Config from "./config.js"
+
     let colors = ["fff3d4", "333", "eee", "6495ED"]
     let fontColor = `#${colors[1]}`
     let bgColor = `#${colors[0]}`
     let fullscreen = false
+    let plotStart=""
+    let showPlotGen = true
+    let isDataLoading = false
 
     const toggleFullscreen = () => fullscreen = !fullscreen
 
+    const getPlot = (str) => {
+        
+        deepai.setApiKey(Config.keys.deepApi);
+
+        (async function() {
+            isDataLoading = true
+
+            try {
+                var resp = await deepai.callStandardApi("text-generator", {
+                    text: str,
+                });
+                if(resp && resp.output) document.getElementById("plotText").innerText = resp.output
+            } catch(error) {
+                document.getElementById("plotText").innerText = "ERROR :/ something happened while loading the data, please try again later"
+            }
+
+            isDataLoading = false
+        })()
+
+
+    }
+
+    const createPlot = () => {
+        getPlot(plotStart)
+    }
+
+    const togglePlotGen = () => showPlotGen = !showPlotGen
+
 section.free-text
+    span
+        a(
+          href="javascript:void(0);"
+          "on:click"="{togglePlotGen}") {!showPlotGen?'Show':'Hide'} Plot Generator
+    
+    span.divider |
+
     span Font color: 
     input(type="color", bind:value={fontColor}) 
-
+    
+    span.divider |
+    
     span Backgournd Color: 
     input(type="color", bind:value={bgColor})
+
+    section(class="plot-form {!showPlotGen?'hidden':''}")
+        hr
+        form
+            .row
+                .col-lg-10.col-md-8
+                    input(type="text" 
+                    class="form-control input-lg" 
+                    placeholder="Add a sentence as the beginning of the plot"
+                    bind:value="{plotStart}")
+                .col-md-2
+                    button(class="btn btn-primary btn-lg btn-block" "on:click|preventDefault"="{ createPlot }") {isDataLoading?' loading ...':'Create Plot'}
     
     hr
     
     pre(class="{fullscreen ? 'fullscreen' : ''}")
-        .text-area(contenteditable=true, style="color:{fontColor};background-color:{bgColor}") TYPE YOUR FUNNY IDEAS HERE
+        .text-area(contenteditable=true, id="plotText", style="color:{fontColor};background-color:{bgColor}") TYPE YOUR FUNNY IDEAS HERE OR GENERATE A PLOT
         span(class="fullscreen-icon", "on:click"="{toggleFullscreen}") &#x26F6;
 
 style.
     .free-text {}
 
- 
+    .free-text .divider {
+        margin: 0 5px;
+    }
 
-    .free-text input {
+    .free-text input[type="color"] {
         height: 30px;
         margin: 0 10px;
     }
@@ -38,7 +94,7 @@ style.
 
     .free-text .text-area {
         padding: 10px;
-        height: 75vh;
+        height: calc(100vh - 375px);
         overflow: auto;
     }
 

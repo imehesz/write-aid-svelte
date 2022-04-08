@@ -99,7 +99,8 @@ body {
     border-color: #222;
 }
 
-.btn-primary:hover {
+.btn-primary:hover,
+.btn-primary:focus {
 	background-color: #000;
 	border-color: #222;
 }
