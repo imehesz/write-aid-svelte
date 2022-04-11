@@ -41,20 +41,21 @@ script.
     const togglePlotGen = () => showPlotGen = !showPlotGen
 
 section.free-text
-    span
-        a(
-          href="javascript:void(0);"
-          "on:click"="{togglePlotGen}") {!showPlotGen?'Show':'Hide'} Plot Generator
-    
-    span.divider |
+    section.page-settings-wrapper
+        span
+            a(
+            href="javascript:void(0);"
+            "on:click"="{togglePlotGen}") {!showPlotGen?'Show':'Hide'} Plot Generator
+        
+        span.divider |
 
-    span Font color: 
-    input(type="color", bind:value={fontColor}) 
-    
-    span.divider |
-    
-    span Backgournd Color: 
-    input(type="color", bind:value={bgColor})
+        span Font color: 
+            input(type="color", bind:value={fontColor}) 
+        
+        span.divider |
+        
+        span Backgournd Color: 
+            input(type="color", bind:value={bgColor})
 
     section(class="plot-form {!showPlotGen?'hidden':''}")
         hr
@@ -127,4 +128,21 @@ style.
         font-weight: bolder;
         color: darkgray;
         cursor: pointer;
+    }
+
+    .free-text .page-settings-wrapper {
+        display: flex;
+        align-items: center;
+    }
+
+    @media only screen and (max-width: 992px) {
+        .free-text .page-settings-wrapper {
+            flex-direction: column;
+            gap: 20px;
+            align-items: flex-start;
+        }
+
+        .free-text .divider {
+            display: none;
+        }
     }
