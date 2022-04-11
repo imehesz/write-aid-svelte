@@ -63,7 +63,7 @@ script.
 
     const search = () => {
         if(wordsStr) {
-            wordsArr = wordsStr.split(",").slice(0,3).map(el => el.trim())
+            wordsArr = wordsStr.split(",").slice(0,3).map(el => el.trim().toLowerCase())
             
             if( wordsArr.length ) {
                 // setting the first word to be the mainWord
