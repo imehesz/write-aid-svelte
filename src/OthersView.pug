@@ -3,13 +3,14 @@ script.
     import { mainWord } from './stores.js'
 
     let wordStr = ""
-    let showResults = false
+    let fromWord = ""
+    let toWord = ""
 
     const getDefaultCategories = () => {
         let _defaultCategories = [
             {
                 id: "meaning_of",
-                label: "Meaning Of",
+                label: `Meaning Of ${wordStr ? '"' + wordStr + '"' : ''}`,
                 links: [
                     {
                         source: "Merriam-Webster",
@@ -30,7 +31,7 @@ script.
 
             {
                 id: "phrases",
-                label: "Phrases",
+                label: `Phrases for ${wordStr ? '"' + wordStr + '"' : ''}`,
                 links: [
                     {
                         source: "The FREE Dictionary",
@@ -46,7 +47,7 @@ script.
 
             {
                 id: "synonyms",
-                label: "Synonymns",
+                label: `Synonymns of ${wordStr ? '"' + wordStr + '"' : ''}`,
                 links: [
                     {
                         source: "Thesaurus.com",
@@ -57,7 +58,7 @@ script.
 
             {
                 id: "in_the_news",
-                label: "In the News",
+                label: `${wordStr ? '"' + wordStr + '"' : ''} In the News`,
                 links: [
                     {
                         source: "Google News",
@@ -112,7 +113,7 @@ section.others-view
                   bind:value="{wordStr}")
             .col-md-2
                 button(class="btn btn-primary btn-lg btn-block" "on:click|preventDefault"="{ genLinksForCategories }") Update
-    
+
     hr
 
     .panel-wrapper
@@ -124,6 +125,29 @@ section.others-view
                     {#each category.links as link}
                       li
                           a(href="{link.url}", target="_blank") {link.source}
+
+    hr
+
+    h3 6 Degrees of Wikipedia
+
+    p Type in 2 words and find the connection between them on Wikipedia pages
+
+    form
+        .row 
+            .col-lg-5
+                input(type="text" 
+                  class="form-control input-lg" 
+                  placeholder="From word"
+                  bind:value="{fromWord}")
+            .col-lg-5
+                input(type="text" 
+                  class="form-control input-lg" 
+                  placeholder="To word"
+                  bind:value="{toWord}")
+            .col-md-2
+                a(class="btn btn-primary btn-lg btn-block" target="_blank" href="https://www.sixdegreesofwikipedia.com/?source={fromWord}&target={toWord}") Go
+
+    hr
 
 style.    
     .others-view .panel-wrapper {
