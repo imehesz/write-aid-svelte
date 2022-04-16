@@ -2,9 +2,16 @@ script.
     // OthersView.pug
     import { mainWord } from './stores.js'
 
+    // word for search
     let wordStr = ""
+    
+    // words for wikipedia
     let fromWord = ""
     let toWord = ""
+
+    // gulman
+    let gulmanTipId = 0
+    let gulmanTip = ""
 
     const getDefaultCategories = () => {
         let _defaultCategories = [
@@ -98,9 +105,24 @@ script.
         otherCategories = otherCategories
     }
 
+    const goWiki = () => window.location.href=`https://www.sixdegreesofwikipedia.com/?source=${fromWord}&target=${toWord}`
+
     PubSub.subscribe("mainWordChange", (wordObj) => {
         wordStr = wordObj.mainWord || ""
         genLinksForCategories()
+    })
+
+    // getting the Gulman tip
+    window.$.ajax({
+        url: `https://imstandup.com/gulmanroulette/daily-tip.json?v=${+(new Date())}`,
+        type: "GET",
+        success: (data) => {
+            console.log(data)
+            if(data && data.values && data.values[0]) {
+                gulmanTip = data.values[0]
+                gulmanTipId = data.range.split(":")[1].substr(1)
+            }
+        }
     })
 
 section.others-view
@@ -145,7 +167,16 @@ section.others-view
                   placeholder="To word"
                   bind:value="{toWord}")
             .col-md-2
-                a(class="btn btn-primary btn-lg btn-block" target="_blank" href="https://www.sixdegreesofwikipedia.com/?source={fromWord}&target={toWord}") Go
+                button(class="btn btn-primary btn-lg btn-block" target="_blank" "on:click|preventDefault"="{ goWiki }") Go
+
+    hr
+
+    section(class="{gulmanTipId?'':'hidden'}")
+        h3 Gary Gulman Daily Writing Tip 
+    
+        p 
+            a(href="https://imstandup.com/gulmanroulette/?tip={gulmanTipId}") {"#"+gulmanTipId}
+            span : {gulmanTip}
 
     hr
 
